@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MoodSelector from "@/components/MoodSelector";
@@ -8,26 +9,27 @@ import { getInsightsForMood } from "@/lib/data";
 import type { MoodOption } from "@/types";
 
 const CheckIn = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const moodParam = searchParams.get("mood");
   
-  // State to track the selected mood
+  // State to track the selected mood and whether to show results
   const [selectedMood, setSelectedMood] = useState<MoodOption | null>(null);
-  
-  // Show results if mood is in URL params
-  const showResults = !!moodParam;
+  const [showResults, setShowResults] = useState(false);
   
   const handleMoodSubmit = (mood: MoodOption | null) => {
     if (mood) {
-      // Use URL params to enable refresh while keeping state
-      navigate(`/check-in?mood=${encodeURIComponent(mood.name)}`);
+      // Don't use URL params - use state instead to prevent page refresh
       setSelectedMood(mood);
+      setShowResults(true);
     }
   };
   
+  const handleStartOver = () => {
+    setShowResults(false);
+    setSelectedMood(null);
+  };
+  
   // Get insights based on mood
-  const insights = moodParam ? getInsightsForMood(moodParam) : null;
+  const insights = selectedMood ? getInsightsForMood(selectedMood.name) : null;
 
   return (
     <>
@@ -45,11 +47,13 @@ const CheckIn = () => {
               <h2 className="text-3xl md:text-4xl font-playfair text-center mb-2 text-gray-800">
                 Your Daily Insights
               </h2>
-              <p className="text-center text-gray-600 mb-10">Based on your {moodParam} mood today</p>
+              <p className="text-center text-gray-600 mb-10">
+                Based on your {selectedMood?.name} mood today
+              </p>
               
               {insights && (
                 <InsightResult
-                  mood={moodParam as string}
+                  mood={selectedMood?.name as string}
                   dailyMessage={insights.dailyMessage}
                   breathingTip={insights.breathingTip}
                   journalingPrompt={insights.journalingPrompt}
@@ -58,7 +62,7 @@ const CheckIn = () => {
               
               <div className="text-center mt-12">
                 <button
-                  onClick={() => navigate("/check-in")}
+                  onClick={handleStartOver}
                   className="text-primary hover:underline"
                 >
                   ← Start Over

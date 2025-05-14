@@ -6,7 +6,7 @@ interface MoodOption {
   id: number;
   name: string;
   bgColor: string;
-  emoji: string;
+  color: string;
 }
 
 interface MoodSelectorProps {
@@ -14,11 +14,11 @@ interface MoodSelectorProps {
 }
 
 const moodOptions: MoodOption[] = [
-  { id: 1, name: "Very Happy", bgColor: "bg-pastel-yellow", emoji: "😄" },
-  { id: 2, name: "Happy", bgColor: "bg-pastel-green", emoji: "🙂" },
-  { id: 3, name: "Neutral", bgColor: "bg-pastel-blue", emoji: "😐" },
-  { id: 4, name: "Sad", bgColor: "bg-pastel-purple", emoji: "😔" },
-  { id: 5, name: "Very Sad", bgColor: "bg-pastel-pink", emoji: "😢" },
+  { id: 1, name: "Very Happy", bgColor: "bg-pastel-yellow", color: "#FEF7CD" },
+  { id: 2, name: "Happy", bgColor: "bg-pastel-green", color: "#F2FCE2" },
+  { id: 3, name: "Neutral", bgColor: "bg-pastel-blue", color: "#D3E4FD" },
+  { id: 4, name: "Sad", bgColor: "bg-pastel-purple", color: "#E5DEFF" },
+  { id: 5, name: "Very Sad", bgColor: "bg-pastel-pink", color: "#FFDEE2" },
 ];
 
 const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
@@ -40,19 +40,53 @@ const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
         How are you feeling today?
       </h2>
       
-      <div className="flex justify-center flex-wrap gap-4 mb-10">
+      <div className="flex justify-center flex-wrap gap-6 mb-10">
         {moodOptions.map((mood) => (
           <button
             key={mood.id}
             onClick={() => handleMoodSelect(mood)}
-            className={`mood-icon w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center ${
-              mood.bgColor
-            } text-4xl md:text-5xl transition-all ${
-              selectedMood?.id === mood.id ? "active" : ""
+            className={`relative group w-24 h-24 md:w-28 md:h-28 flex flex-col items-center justify-center transition-all duration-300 ${
+              selectedMood?.id === mood.id ? "scale-110" : ""
             }`}
             aria-label={mood.name}
           >
-            {mood.emoji}
+            {/* Fuzzy mood ball */}
+            <div 
+              className={`w-full h-full rounded-full shadow-md transition-all duration-300
+                ${selectedMood?.id === mood.id ? 'ring-4 ring-white/50' : ''}
+                hover:scale-105 hover:shadow-lg`}
+              style={{
+                background: mood.color,
+                boxShadow: selectedMood?.id === mood.id ? '0 0 20px rgba(255,255,255,0.4)' : ''
+              }}
+            >
+              {/* Face features for the mood ball */}
+              <div className="relative w-full h-full">
+                {/* Eyes */}
+                <div className="absolute" style={{ top: '40%', left: '30%', width: '8px', height: '8px', borderRadius: '50%', background: '#333' }}></div>
+                <div className="absolute" style={{ top: '40%', right: '30%', width: '8px', height: '8px', borderRadius: '50%', background: '#333' }}></div>
+                
+                {/* Different mouth shapes based on mood */}
+                {mood.id === 1 && (
+                  <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '16px', height: '8px', borderRadius: '0 0 10px 10px', border: '2px solid #333', borderTop: 'none' }}></div>
+                )}
+                {mood.id === 2 && (
+                  <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '6px', borderRadius: '0 0 10px 10px', border: '2px solid #333', borderTop: 'none' }}></div>
+                )}
+                {mood.id === 3 && (
+                  <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '2px', background: '#333' }}></div>
+                )}
+                {mood.id === 4 && (
+                  <div className="absolute" style={{ bottom: '38%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '6px', borderRadius: '10px 10px 0 0', border: '2px solid #333', borderBottom: 'none' }}></div>
+                )}
+                {mood.id === 5 && (
+                  <div className="absolute" style={{ bottom: '38%', left: '50%', transform: 'translateX(-50%)', width: '16px', height: '8px', borderRadius: '10px 10px 0 0', border: '2px solid #333', borderBottom: 'none' }}></div>
+                )}
+              </div>
+            </div>
+            
+            {/* Mood name */}
+            <span className="mt-3 text-sm font-medium text-gray-700">{mood.name}</span>
           </button>
         ))}
       </div>
@@ -78,3 +112,4 @@ const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
 };
 
 export default MoodSelector;
+
