@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/context/AuthContext";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,13 +21,10 @@ const SignIn = () => {
     setError("");
     
     try {
-      // Simulate authentication - will be replaced with Supabase
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show simulated error for now
-      setError("Sign in will be implemented with Supabase integration");
-    } catch (err) {
-      setError("An error occurred during sign in");
+      await signIn(email, password);
+      // Auth context will handle redirection and success messages
+    } catch (err: any) {
+      setError(err.message || "An error occurred during sign in");
     } finally {
       setIsLoading(false);
     }

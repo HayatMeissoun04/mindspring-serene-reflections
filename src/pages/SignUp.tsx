@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/context/AuthContext";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ const SignUp = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,17 +26,19 @@ const SignUp = () => {
       return;
     }
     
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+    
     setIsLoading(true);
     setError("");
     
     try {
-      // Simulate registration - will be replaced with Supabase
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Show simulated error for now
-      setError("Sign up will be implemented with Supabase integration");
-    } catch (err) {
-      setError("An error occurred during registration");
+      await signUp(email, password, name);
+      // Auth context will handle redirection and success messages
+    } catch (err: any) {
+      setError(err.message || "An error occurred during registration");
     } finally {
       setIsLoading(false);
     }

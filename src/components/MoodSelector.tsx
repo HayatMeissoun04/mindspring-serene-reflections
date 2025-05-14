@@ -1,24 +1,18 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-
-interface MoodOption {
-  id: number;
-  name: string;
-  bgColor: string;
-  color: string;
-}
+import { MoodOption } from "@/types";
 
 interface MoodSelectorProps {
   onSubmit: (selectedMood: MoodOption | null) => void;
 }
 
 const moodOptions: MoodOption[] = [
-  { id: 1, name: "Very Happy", bgColor: "bg-pastel-yellow", color: "#FEF7CD" },
-  { id: 2, name: "Happy", bgColor: "bg-pastel-green", color: "#F2FCE2" },
-  { id: 3, name: "Neutral", bgColor: "bg-pastel-blue", color: "#D3E4FD" },
-  { id: 4, name: "Sad", bgColor: "bg-pastel-purple", color: "#E5DEFF" },
-  { id: 5, name: "Very Sad", bgColor: "bg-pastel-pink", color: "#FFDEE2" },
+  { id: 1, name: "Very Happy", bgColor: "bg-pastel-yellow", emoji: "😄" },
+  { id: 2, name: "Happy", bgColor: "bg-pastel-green", emoji: "🙂" },
+  { id: 3, name: "Neutral", bgColor: "bg-pastel-blue", emoji: "😐" },
+  { id: 4, name: "Sad", bgColor: "bg-pastel-purple", emoji: "😔" },
+  { id: 5, name: "Very Sad", bgColor: "bg-pastel-pink", emoji: "😢" },
 ];
 
 const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
@@ -56,7 +50,10 @@ const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
                 ${selectedMood?.id === mood.id ? 'ring-4 ring-white/50' : ''}
                 hover:scale-105 hover:shadow-lg`}
               style={{
-                background: mood.color,
+                background: mood.name === "Very Happy" ? "#FEF7CD" : 
+                           mood.name === "Happy" ? "#F2FCE2" : 
+                           mood.name === "Neutral" ? "#D3E4FD" : 
+                           mood.name === "Sad" ? "#E5DEFF" : "#FFDEE2",
                 boxShadow: selectedMood?.id === mood.id ? '0 0 20px rgba(255,255,255,0.4)' : ''
               }}
             >
@@ -67,19 +64,19 @@ const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
                 <div className="absolute" style={{ top: '40%', right: '30%', width: '8px', height: '8px', borderRadius: '50%', background: '#333' }}></div>
                 
                 {/* Different mouth shapes based on mood */}
-                {mood.id === 1 && (
+                {mood.name === "Very Happy" && (
                   <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '16px', height: '8px', borderRadius: '0 0 10px 10px', border: '2px solid #333', borderTop: 'none' }}></div>
                 )}
-                {mood.id === 2 && (
+                {mood.name === "Happy" && (
                   <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '6px', borderRadius: '0 0 10px 10px', border: '2px solid #333', borderTop: 'none' }}></div>
                 )}
-                {mood.id === 3 && (
+                {mood.name === "Neutral" && (
                   <div className="absolute" style={{ bottom: '35%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '2px', background: '#333' }}></div>
                 )}
-                {mood.id === 4 && (
+                {mood.name === "Sad" && (
                   <div className="absolute" style={{ bottom: '38%', left: '50%', transform: 'translateX(-50%)', width: '14px', height: '6px', borderRadius: '10px 10px 0 0', border: '2px solid #333', borderBottom: 'none' }}></div>
                 )}
-                {mood.id === 5 && (
+                {mood.name === "Very Sad" && (
                   <div className="absolute" style={{ bottom: '38%', left: '50%', transform: 'translateX(-50%)', width: '16px', height: '8px', borderRadius: '10px 10px 0 0', border: '2px solid #333', borderBottom: 'none' }}></div>
                 )}
               </div>
@@ -112,4 +109,3 @@ const MoodSelector = ({ onSubmit }: MoodSelectorProps) => {
 };
 
 export default MoodSelector;
-
